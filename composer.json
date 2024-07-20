@@ -1,0 +1,16 @@
+{
+    "name": "tereta/framework.pattern",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Framework\\Pattern\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tereta Alexander",
+            "email": "tereta.alexander@gmail.com"
+        }
+    ],
+    "require": {}
+}
