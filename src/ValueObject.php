@@ -106,10 +106,10 @@ class ValueObject implements Iterator
     }
 
     /**
-     * @param string|null $key
+     * @param string $key
      * @return mixed
      */
-    public function get(?string $key = null): mixed
+    public function get(string $key): mixed
     {
         return $this->data[$key] ?? null;
     }
