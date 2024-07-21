@@ -2,15 +2,82 @@
 
 namespace Framework\Pattern;
 
+use Iterator;
+
 /**
- * class Framework\Pattern\ValueObject
+ * ·······································································
+ * : _____                        _                     _                :
+ * :|_   _|   ___   _ __    ___  | |_    __ _        __| |   ___  __   __:
+ * :  | |    / _ \ | '__|  / _ \ | __|  / _` |      / _` |  / _ \ \ \ / /:
+ * :  | |   |  __/ | |    |  __/ | |_  | (_| |  _  | (_| | |  __/  \ V / :
+ * :  |_|    \___| |_|     \___|  \__|  \__,_| (_)  \__,_|  \___|   \_/  :
+ * ·······································································
+ * ···························WWW.TERETA.DEV······························
+ * ·······································································
+ *
+ * @class Framework\Pattern\ValueObject
+ * @package Framework\Pattern
+ * @link https://tereta.dev
+ * @author Tereta Alexander <tereta.alexander@gmail.com>
  */
-class ValueObject
+class ValueObject implements Iterator
 {
+    /**
+     * @var int
+     */
+    private int $position = 0;
+
+    /**
+     * @param array $data
+     */
     public function __construct(private array $data = [])
     {
     }
 
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function __get(string $key): mixed
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function __set(string $key, mixed $value): void
+    {
+        $this->set($key, $value);
+    }
+
+    /**
+     * @return array
+     */
+    public function _toArray(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function __unset(string $name): void
+    {
+        $this->unset($name);
+    }
+
+    /**
+     * Body
+     */
+
+    /**
+     * @param array $data
+     * @return $this
+     */
     public function setData(array $data): static
     {
         $this->data = $data;
@@ -18,6 +85,11 @@ class ValueObject
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
     public function set(string $key, mixed $value): static
     {
         $this->data[$key] = $value;
@@ -25,6 +97,9 @@ class ValueObject
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getData(): array
     {
         return $this->data;
@@ -39,34 +114,61 @@ class ValueObject
         return $this->data[$key] ?? null;
     }
 
-    public function toArray(): array
-    {
-        return $this->data;
-    }
-
-    public function unset(string $key): statics
+    /**
+     * @param string $key
+     * @return $this
+     */
+    public function unset(string $key): static
     {
         unset($this->data[$key]);
         return $this;
     }
 
-    public function __get(string $key): mixed
-    {
-        return $this->get($key);
+    /**
+     * Iterator functions
+     */
+
+    /**
+     * @return mixed
+     */
+    public function current(): mixed {
+        $key = array_keys($this->data)[$this->position];
+
+        return $this->data[$key];
     }
 
-    public function __set(string $key, mixed $value): void
-    {
-        $this->set($key, $value);
+    /**
+     * @return mixed
+     */
+    public function key(): mixed {
+        return array_keys($this->data)[$this->position];
     }
 
-    public function _toArray(): array
-    {
-        return $this->data;
+    /**
+     * @return void
+     */
+    public function next(): void {
+        ++$this->position;
     }
 
-    public function __unset(string $name): void
-    {
-        $this->unset($name);
+    /**
+     * @return void
+     */
+    public function rewind(): void {
+        $this->position = 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid(): bool {
+        $keys = array_keys($this->data);
+        $key = $keys[$this->position] ?? null;
+
+        if ($key === null) {
+            return false;
+        }
+
+        return isset($this->data[$key]);
     }
 }
