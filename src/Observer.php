@@ -2,10 +2,6 @@
 
 namespace Framework\Pattern;
 
-use ReflectionClass;
-use ReflectionException;
-use Exception;
-
 /**
  * ·······································································
  * : _____                        _                     _                :
@@ -17,7 +13,7 @@ use Exception;
  * ···························WWW.TERETA.DEV······························
  * ·······································································
  *
- * @class Framework\Pattern\Factory
+ * @class Framework\Pattern\Observer
  * @package Framework\Pattern
  * @link https://tereta.dev
  * @since 2020-2024
@@ -25,29 +21,46 @@ use Exception;
  * @author Tereta Alexander <tereta.alexander@gmail.com>
  * @copyright 2020-2024 Tereta Alexander
  */
-class Factory
+class Observer
 {
     /**
-     * @param string|null $instance
+     * @param array $config
      */
-    public function __construct(
-        private ?string $instance = null
-    ) {
+    public function __construct(private array $config)
+    {
     }
 
     /**
-     * @param string $class
-     * @param array $args
-     * @return object|string|null
-     * @throws ReflectionException
+     * @param string $event
+     * @param array $arguments
+     * @param array $linkedArguments
+     * @return void
      */
-    public function create(string $class, array $args = []): object
+    public function dispatch(string $event, array $arguments = [], array &$linkedArguments = []): void
     {
-        $reflectionClass = new ReflectionClass($class);
-        $reflectionClass->isSubclassOf($this->instance) || throw new Exception(
-            "The class should implement " . $this->instance . "."
-        );
+        $eventArray = $this->config[$event] ?? [];
+        if (!$eventArray) {
+            return;
+        }
 
-        return $reflectionClass->newInstanceArgs($args);
+        foreach ($eventArray as $pointer) {
+            $this->execute($pointer, $arguments, $linkedArguments);
+        }
+    }
+
+    /**
+     * @param array $pointer
+     * @param array $arguments
+     * @param array $linkedArguments
+     * @return void
+     */
+    private function execute(array $pointer, array $arguments = [], array &$linkedArguments = []): void
+    {
+        $className = array_keys($pointer)[0];
+        $methodName = array_values($pointer)[0];
+        $className = str_replace('/', '\\', $className);
+
+        $class = new $className;
+        $class->{$methodName}($arguments, $linkedArguments);
     }
 }
