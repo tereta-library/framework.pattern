@@ -2,7 +2,7 @@
     "name": "tereta/framework.pattern",
     "description": "Patterns of framework",
     "license": "Apache-2.0",
-    "version": "0.1.23",
+    "version": "0.1.28",
     "type": "library",
     "autoload": {
         "psr-4": {
