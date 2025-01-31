@@ -2,7 +2,7 @@
 
 namespace Framework\Pattern;
 
-use ReflectionException;
+use Framework\Pattern\Traits\Singleton as SingletonTrait;
 
 /**
  * ·······································································
@@ -25,28 +25,12 @@ use ReflectionException;
  */
 abstract class Singleton
 {
-    protected static array $instance = [];
+    use SingletonTrait;
 
     /**
      * Singleton constructor.
      */
     private function __construct()
     {
-    }
-
-    /**
-     * @return $this
-     * @throws ReflectionException
-     */
-    public static function singleton(): static
-    {
-        $arguments = func_get_args();
-        if (!$arguments) {
-            $arguments[] = 'default';
-        }
-        $instance = array_shift($arguments);
-        if (isset(static::$instance[$instance])) return static::$instance[$instance];
-
-        return (static::$instance[$instance] = new static(...$arguments));
     }
 }
