@@ -18,7 +18,7 @@ trait Cache
      * @param string ...$keys
      * @return mixed
      */
-    protected function setCache(mixed $value, string ...$keys): mixed
+    protected function setCache(mixed $value, string|int ...$keys): mixed
     {
         if (!isset($this->cache[static::class])) {
             $this->cache[static::class] = [];
@@ -47,7 +47,7 @@ trait Cache
      * @param string ...$keys
      * @return mixed
      */
-    protected function getCache(string ...$keys): mixed
+    protected function getCache(string|int ...$keys): mixed
     {
         $link = &$this->cache[static::class];
         foreach($keys as $key) {

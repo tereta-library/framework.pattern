@@ -2,6 +2,9 @@
 
 namespace Framework\Pattern\Traits;
 
+use Framework\Helper\Strings as StringsHelper;
+use Framework\Pattern\Traits\Cache as CacheTrait;
+
 /**
  * Trait Singleton
  * @package Framework\Pattern\Traits
@@ -9,6 +12,8 @@ namespace Framework\Pattern\Traits;
  */
 trait Singleton
 {
+    use CacheTrait;
+
     /**
      * @var array $instance
      */
@@ -30,16 +35,18 @@ trait Singleton
      */
     public static function getInstance(...$arguments): static
     {
-        if (!$arguments) {
-            $arguments[] = 'default';
-        }
+        $key = StringsHelper::generateKey(...$arguments);
 
-        $instance = array_shift($arguments);
-        if (isset(static::$instance[static::class][$instance])) return static::$instance[static::class][$instance];
+        if (isset(static::$instance[static::class][$key])) {
+            return static::$instance[static::class][$key];
+        }
 
         if (!isset(static::$instance[static::class])) {
             static::$instance[static::class] = [];
         }
-        return (static::$instance[static::class][$instance] = new static(...$arguments));
+
+        static::$instance[static::class][$key] = new static(...$arguments);
+
+        return static::$instance[static::class][$key];
     }
 }
