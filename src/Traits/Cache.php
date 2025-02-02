@@ -2,6 +2,8 @@
 
 namespace Framework\Pattern\Traits;
 
+use Framework\Helper\Strings as StringsHelper;
+
 /**
  * @package Framework\Pattern\Traits
  * @class Framework\Pattern\Traits\Cache
@@ -24,21 +26,8 @@ trait Cache
             $this->cache[static::class] = [];
         }
 
-        $link = &$this->cache[static::class];
-        $keysArray = array_keys($keys);
-        $lastKey = array_pop($keysArray);
-        foreach($keys as $key => $item) {
-            if ($key == $lastKey) {
-                $link[$item] = $value;
-                break;
-            }
-
-            if (!isset($link[$item])) {
-                $link[$item] = [];
-            }
-
-            $link = &$link[$item];
-        }
+        $key = StringsHelper::generateKey(...$keys);
+        $this->cache[static::class][$key] = $value;
 
         return $value;
     }
@@ -49,14 +38,11 @@ trait Cache
      */
     protected function getCache(string|int ...$keys): mixed
     {
-        $link = &$this->cache[static::class];
-        foreach($keys as $key) {
-            if (!isset($link[$key])) {
-                return null;
-            }
-
-            $link = &$link[$key];
+        $key = StringsHelper::generateKey(...$keys);
+        if (!isset($this->cache[static::class][$key])) {
+            return null;
         }
-        return $link;
+
+        return $this->cache[static::class][$key];
     }
 }
