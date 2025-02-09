@@ -20,7 +20,7 @@ trait Cache
      * @param string ...$keys
      * @return mixed
      */
-    protected function setCache(mixed $value, string|int ...$keys): mixed
+    protected function setCache(mixed $value, string|int|object|null|bool|float ...$keys): mixed
     {
         if (!isset($this->cache[static::class])) {
             $this->cache[static::class] = [];
@@ -36,7 +36,7 @@ trait Cache
      * @param string ...$keys
      * @return mixed
      */
-    protected function getCache(string|int ...$keys): mixed
+    protected function getCache(string|int|object|null|bool|float ...$keys): mixed
     {
         $key = StringsHelper::generateKey(...$keys);
         if (!isset($this->cache[static::class][$key])) {
